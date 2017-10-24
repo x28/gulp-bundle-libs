@@ -1,0 +1,28 @@
+{
+  "name": "gulp-bundle-libs",
+  "version": "0.1.0",
+  "description": "Bundle assets with gulp.",
+  "keywords": "gulp,assets,bundle,concat,copy",
+  "homepage": "https://github.com/x28/gulp-bundle-libs",
+  "bugs": {
+    "url": "https://github.com/x28/gulp-bundle-libs/issues"
+  },
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/x28/gulp-bundle-libs.git"
+  },
+  "author": "x28 AG",
+  "license": "LGPL",
+  "dependencies": {
+    "async": "^0.9.2",
+    "gulp-util": "^3.0.4",
+    "through2": "^0.6.5",
+    "underscore": "^1.8.3",
+    "vinyl": "^0.4.6",
+    "vinyl-fs": "^1.0.0"
+  }
+}
