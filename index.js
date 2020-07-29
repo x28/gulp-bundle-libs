@@ -12,7 +12,7 @@ module.exports = function(config) {
         config = {};
 
     _.defaults(config, {
-        prefix: false,
+        profiles: [],
         moduleDirectory: 'node_modules'
     });
 
@@ -27,33 +27,19 @@ module.exports = function(config) {
         if (file.isBuffer())
             assets = JSON.parse(file.contents.toString());
 
-        async.each(_.pairs(assets), function(pack, exit) {
-            var name;
+        async.each(_.pairs(assets), function(profile, profileComplete) {
+            var profileName = profile[0];
 
-            if (_.isFunction(config.prefix)) {
-                name = _.partial(config.prefix, _, pack[0]);
-            }
-            else if (_.isString(config.prefix)) {
-                name = function() {
-                    return config.prefix.replace('{{PREFIX}}', pack[0])
-                };
-            }
-            else if (config.prefix === false) {
-                name = function(filebase) {
-                    return filebase;
-                };
-            }
-            else {
-                name = function(filebase) {
-                    return [pack[0], filebase].join('.');
-                };
+            if (!_.isEmpty(config.profiles) && !_.contains(config.profiles, profileName)) {
+                profileComplete();
+                return;
             }
 
-            async.each(_.pairs(pack[1]), function(segment, endOnePrefixPack) {
-                var temp = segment[0].split('@'),
+            async.each(_.pairs(profile[1]), function(operations, operationComplete) {
+                var temp = operations[0].split('@'),
                     outputFile = temp[0],
                     action = temp[1],
-                    files = vfs.src(_.map(segment[1], function(file) {
+                    files = vfs.src(_.map(operations[1], function(file) {
                         return path.join(config.moduleDirectory, file);
                     }), {
                         cwd: process.cwd(),
@@ -63,8 +49,7 @@ module.exports = function(config) {
 
                 switch (action) {
                     case 'concat':
-                        var content = [],
-                            error = [];
+                        var content = [];
 
                         files
                             .pipe(through.obj(function(file, enc, done) {
@@ -73,13 +58,13 @@ module.exports = function(config) {
                                 done();
                             }, function(close) {
                                 var newFile = new gulpUtil.File({
-                                    path: path.join(base, name(outputFile)),
+                                    path: path.join(base, outputFile),
                                     contents: Buffer.concat(content)
                                 });
 
                                 save.push(newFile);
                                 close();
-                                endOnePrefixPack();
+                                operationComplete();
                             }));
                         break;
 
@@ -87,7 +72,7 @@ module.exports = function(config) {
                         files
                             .pipe(through.obj(function(file, enc, done) {
                                 var newFile = new gulpUtil.File({
-                                    path: path.join(base, name(outputFile), file.relative),
+                                    path: path.join(base, outputFile, file.relative),
                                     contents: file.contents
                                 });
 
@@ -95,12 +80,12 @@ module.exports = function(config) {
                                 done();
                             }, function(close){
                                 close();
-                                endOnePrefixPack();
+                                operationComplete();
                             }));
                         break;
 
                 }
-            }, exit);
+            }, profileComplete);
         }, function() {
             cb(null)
         });
