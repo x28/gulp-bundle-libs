@@ -1,13 +1,21 @@
 {
   "name": "gulp-bundle-libs",
-  "version": "0.1.0",
-  "description": "Bundle assets with gulp.",
-  "keywords": "gulp,assets,bundle,concat,copy",
+  "version": "0.2.0",
+  "description": "Use to copy or concat resource files from the node module directory into your project directory.",
+  "keywords": [
+    "gulp",
+    "gulpplugin",
+    "assets",
+    "libs",
+    "bundle",
+    "concat",
+    "copy"
+  ],
   "homepage": "https://github.com/x28/gulp-bundle-libs",
   "bugs": {
     "url": "https://github.com/x28/gulp-bundle-libs/issues"
   },
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
