@@ -1,9 +1,9 @@
 var through = require('through2');
 var _ = require('underscore');
 var vfs = require('vinyl-fs');
+var Vinyl = require('vinyl');
 var async = require('async');
 var path = require('path');
-var gulpUtil = require('gulp-util');
 
 const PLUGIN_NAME = 'gulp-bundle-libs';
 
@@ -57,7 +57,7 @@ module.exports = function(config) {
                                 content.push(new Buffer('\n'));
                                 done();
                             }, function(close) {
-                                var newFile = new gulpUtil.File({
+                                var newFile = new Vinyl({
                                     path: path.join(base, outputFile),
                                     contents: Buffer.concat(content)
                                 });
@@ -71,7 +71,7 @@ module.exports = function(config) {
                     case 'copy':
                         files
                             .pipe(through.obj(function(file, enc, done) {
-                                var newFile = new gulpUtil.File({
+                                var newFile = new Vinyl({
                                     path: path.join(base, outputFile, file.relative),
                                     contents: file.contents
                                 });
