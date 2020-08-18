@@ -1,5 +1,4 @@
 var through = require('through2');
-var _ = require('underscore');
 var vfs = require('vinyl-fs');
 var Vinyl = require('vinyl');
 var async = require('async');
@@ -8,13 +7,12 @@ var path = require('path');
 const PLUGIN_NAME = 'gulp-bundle-libs';
 
 module.exports = function(config) {
-    if (!config)
-        config = {};
-
-    _.defaults(config, {
+    var defaults = {
         profiles: [],
         moduleDirectory: 'node_modules'
-    });
+    };
+
+    config = Object.assign(defaults, config);
 
     return through.obj(function(file, enc, cb) {
         if (file.isNull())
@@ -26,15 +24,15 @@ module.exports = function(config) {
         if (file.isBuffer())
             assets = JSON.parse(file.contents.toString());
 
-        async.each(_.pairs(assets), function(profile, profileComplete) {
+        async.each(Object.entries(assets), function(profile, profileComplete) {
             var profileName = profile[0];
 
-            if (!_.isEmpty(config.profiles) && !_.contains(config.profiles, profileName)) {
+            if (config.profiles.length > 0 && !config.profiles.includes(profileName)) {
                 profileComplete();
                 return;
             }
 
-            async.each(_.pairs(profile[1]), function(operations, operationComplete) {
+            async.each(Object.entries(profile[1]), function(operations, operationComplete) {
                 var temp = operations[0].split('@'),
                     outputFile = temp[0],
                     action = temp[1],
