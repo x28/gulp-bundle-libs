@@ -21,7 +21,6 @@ module.exports = function(config) {
             return cb(null, file);
 
         var save = this,
-            base = path.dirname(file.path),
             assets = {};
 
         if (file.isBuffer())
@@ -39,10 +38,8 @@ module.exports = function(config) {
                 var temp = operations[0].split('@'),
                     outputFile = temp[0],
                     action = temp[1],
-                    files = vfs.src(_.map(operations[1], function(file) {
-                        return path.join(config.moduleDirectory, file);
-                    }), {
-                        cwd: process.cwd(),
+                    files = vfs.src(operations[1], {
+                        cwd: config.moduleDirectory,
                         buffer: true,
                         read: true,
                         allowEmpty: true
@@ -59,7 +56,7 @@ module.exports = function(config) {
                                 done();
                             }, function(close) {
                                 var newFile = new Vinyl({
-                                    path: path.join(base, outputFile),
+                                    path: outputFile,
                                     contents: Buffer.concat(content)
                                 });
 
@@ -73,7 +70,7 @@ module.exports = function(config) {
                         files
                             .pipe(through.obj(function(file, enc, done) {
                                 var newFile = new Vinyl({
-                                    path: path.join(base, outputFile, file.relative),
+                                    path: path.join(outputFile,file.relative),
                                     contents: file.contents
                                 });
 
