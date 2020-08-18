@@ -44,7 +44,8 @@ module.exports = function(config) {
                     }), {
                         cwd: process.cwd(),
                         buffer: true,
-                        read: true
+                        read: true,
+                        allowEmpty: true
                     });
 
                 switch (action) {
