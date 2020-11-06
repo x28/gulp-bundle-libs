@@ -1,6 +1,6 @@
 {
   "name": "gulp-bundle-libs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Use to copy or concat resource files from the node module directory into your project directory.",
   "keywords": [
     "gulp",
